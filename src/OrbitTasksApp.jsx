@@ -1,6 +1,6 @@
 import { Filter } from "lucide-react";
 import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 uuidv4();
 
 function OrbitTasksApp() {
@@ -11,23 +11,21 @@ function OrbitTasksApp() {
   const [editValue, setEditValue] = useState("");
 
   useEffect(() => {
-    const savedTasks = localStorage.getItem('orbitTasks');
-    if(savedTasks){
+    const savedTasks = localStorage.getItem("orbitTasks");
+    if (savedTasks) {
       try {
         const parsedTasks = JSON.parse(savedTasks);
         setTasks(parsedTasks);
       } catch (error) {
-        console.error("Error parsing tasks from localStorage: ",error);
+        console.error("Error parsing tasks from localStorage: ", error);
       }
     }
   }, []);
 
-
   useEffect(() => {
-    localStorage.setItem('orbitTasks', JSON.stringify(tasks));
+    localStorage.setItem("orbitTasks", JSON.stringify(tasks));
   }, [tasks]);
-  
-  
+
   const handleEdit = (id, text) => {
     setEditingId(id);
     setEditValue(text);
@@ -104,7 +102,9 @@ function OrbitTasksApp() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 ">
       <div className="container w-full max-w-md p-6 mx-auto my-5 sm:p-8 bg-white/95 backdrop-blur-lg rounded-xl">
-        <h1 className="text-2xl font-bold text-center text-pink-500">OrbitTasks</h1>
+        <h1 className="text-2xl font-bold text-center text-pink-500">
+          OrbitTasks
+        </h1>
         <h1 className="text-lg font-bold text-center">My Task List</h1>
 
         {/* Stats */}
@@ -138,10 +138,18 @@ function OrbitTasksApp() {
               type="text"
               className="flex-1 p-3 rounded-lg"
               placeholder="Add a Task...."
+              onKeyUp={(e) => {
+                if (e.key === "Enter") handleAdd();
+              }}
             />
             <button
               onClick={handleAdd}
-              className="px-4 py-3 mx-2 font-bold text-white bg-blue-700 rounded-md hover:bg-blue-800"
+              disabled={!task.trim()}
+              className={`px-4 py-3 mx-2 font-bold text-white rounded-md transition-colors ${
+                task.trim()
+                  ? "bg-blue-700 hover:bg-blue-800"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
             >
               Add Task
             </button>
@@ -187,13 +195,18 @@ function OrbitTasksApp() {
         {/* Tasks Section */}
         <div className="mb-6">
           <div className="tasks">
-          <h2 className="text-lg font-semibold text-gray-600">Your Tasks</h2>
-            
+            <h2 className="text-lg font-semibold text-gray-600">Your Tasks</h2>
+
             {filteredTasks.length === 0 ? (
-              <div className="py-4 text-center text-gray-400">No tasks found.</div>
+              <div className="py-4 text-center text-gray-400">
+                No tasks found.
+              </div>
             ) : (
               filteredTasks.map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-2 my-2 bg-gray-100 rounded-lg">
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between p-2 my-2 bg-gray-100 rounded-lg"
+                >
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -208,14 +221,18 @@ function OrbitTasksApp() {
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
                         onKeyUp={(e) => {
-                          if (e.key === 'Enter') saveEdit(item.id);
-                          if (e.key === 'Escape') cancelEdit();
+                          if (e.key === "Enter") saveEdit(item.id);
+                          if (e.key === "Escape") cancelEdit();
                         }}
                         className="flex-1 p-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         autoFocus
                       />
                     ) : (
-                      <span className={item.isCompleted ? "line-through text-gray-400" : ""}>
+                      <span
+                        className={
+                          item.isCompleted ? "line-through text-gray-400" : ""
+                        }
+                      >
                         {item.task}
                       </span>
                     )}
@@ -267,13 +284,13 @@ function OrbitTasksApp() {
               <span className="text-sm font-medium text-gray-800">
                 {Math.round((stats.completed / stats.total) * 100)}%
               </span>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full">
-                <div
-                  className="h-2 transition-all duration-500 ease-out rounded-full bg-gradient-to-r from-green-400 to-green-600"
-                  style={{ width: `${(stats.completed / stats.total) * 100}%` }}
-                ></div>
-              </div>            
+            </div>
+            <div className="w-full h-2 bg-gray-200 rounded-full">
+              <div
+                className="h-2 transition-all duration-500 ease-out rounded-full bg-gradient-to-r from-green-400 to-green-600"
+                style={{ width: `${(stats.completed / stats.total) * 100}%` }}
+              ></div>
+            </div>
           </div>
         )}
 
