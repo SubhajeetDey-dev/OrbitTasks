@@ -42,6 +42,9 @@ function OrbitTasksApp() {
   };
 
   const handleAdd = () => {
+    if (!task.trim()) {
+      return;
+    }
     setTasks([...tasks, { id: uuidv4(), task, isCompleted: false }]);
     setTask("");
   };
